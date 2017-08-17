@@ -17,7 +17,14 @@ class App {
 
     console.log('Please enter time when you want be leave the computer (as "HH:mm").');
     prompt.get(['time'], (err, result) => {
-      const time = moment(result.time, 'H:m');
+      let timeStr = result.time;
+
+      // also allow hours
+      if (timeStr.length <= 2) {
+        timeStr += ':00';
+      }
+
+      const time = moment(timeStr, 'H:m');
       const now = moment();
       const timeDiff = this.getTimeDifference(now, time);
       const msg = `Timer set. You will be notified in ${timeDiff} at ${time.format('HH:mm')} o'clock.`;
