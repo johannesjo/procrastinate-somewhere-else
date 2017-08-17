@@ -13,9 +13,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "inquirer": "^3.2.2",
     "jfs": "^0.2.6",
     "moment": "^2.18.1",
-    "node-schedule": "^1.2.4",
-    "prompt": "^1.0.0"
+    "node-schedule": "^1.2.4"
   }
 }

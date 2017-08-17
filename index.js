@@ -1,4 +1,4 @@
-const prompt = require('prompt');
+const inquirer = require('inquirer');
 const moment = require('moment');
 const spawn = require('child_process').spawn;
 const Store = require('jfs');
@@ -6,43 +6,71 @@ const sendMsg = require('./send-message');
 
 class App {
   constructor() {
-  }
-
-  initDb() {
     this.db = new Store('db.json', { pretty: true });
+    this.currentStoredVals = this.db.allSync().config || {};
+    //this.checkAndWriteDefaults(DEFAULTS, this.currentStoredVals);
+
+    this.baseQuestions = [
+      {
+        name: 'time',
+        type: 'input',
+        message: 'Please enter time when you want be leave the computer (as HH:mm).',
+        default: this.currentStoredVals.time && moment(this.currentStoredVals.time).format('HH:mm')
+      },
+      {
+        name: 'action',
+        type: 'list',
+        message: 'Please select an action to execute after the timeout.',
+        choices: [
+          'NONE',
+          'LOCK',
+          'SUSPEND',
+          'SHUTDOWN'
+        ],
+        default: this.currentStoredVals.action || 'LOCK'
+      },
+      {
+        name: 'message',
+        type: 'string',
+        message: 'Enter the message to be displayed or press enter to leave as is.',
+        default: this.currentStoredVals.message
+      }
+    ];
+
+    this.startPrompt();
   }
 
-  startPrompt(cb) {
-    prompt.start();
-
-    console.log('Please enter time when you want be leave the computer (as "HH:mm").');
-    prompt.get(['time'], (err, result) => {
-      let timeStr = result.time;
-
-      // also allow hours
-      if (timeStr.length <= 2) {
-        timeStr += ':00';
-      }
-
-      const time = moment(timeStr, 'H:m');
-      const now = moment();
-      const timeDiff = this.getTimeDifference(now, time);
-      const msg = `Timer set. You will be notified in ${timeDiff} at ${time.format('HH:mm')} o'clock.`;
-
-      this.writeTimeToDb(time);
-
-      sendMsg(msg);
-      console.log(msg);
-
-      // exec callback if given
-      if (cb) {
-        cb();
-      }
-    });
+  parseTimeString(timeStr) {
+    // also allow hours
+    if (timeStr.length <= 2) {
+      timeStr += ':00';
+    }
+    return moment(timeStr, 'H:m');
   }
 
-  writeTimeToDb(time) {
-    this.db.saveSync('time', time);
+  startPrompt() {
+    inquirer.prompt(this.baseQuestions)
+      .then((result) => {
+        this.configDone(result);
+      });
+  }
+
+  configDone(result) {
+    const timeMoment = this.parseTimeString(result.time);
+    const dataToSave = Object.assign({}, result, { time: timeMoment });
+    this.writeInputToDb(dataToSave);
+    this.sendDoneMsg(timeMoment);
+  }
+
+  sendDoneMsg(timeMoment) {
+    const now = moment();
+    const timeDiff = this.getTimeDifference(now, timeMoment);
+    const msg = `Timer set. You will be notified in ${timeDiff} at ${timeMoment.format('HH:mm')} o'clock.`;
+    sendMsg(msg);
+  }
+
+  writeInputToDb(dataToSave) {
+    this.db.saveSync('config', Object.assign({}, this.currentStoredVals, dataToSave));
   }
 
   getTimeDifference(now, then) {
@@ -56,6 +84,4 @@ class App {
   }
 }
 
-const app = new App();
-app.initDb();
-app.startPrompt(app.startBackgroundProcess);
+new App();
