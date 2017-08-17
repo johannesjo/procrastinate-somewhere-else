@@ -76,6 +76,7 @@ class App {
     const dataToSave = Object.assign({}, result, { time: timeMoment });
     this.writeInputToDb(dataToSave);
     this.sendDoneMsg(timeMoment);
+    this.startBackgroundProcess();
   }
 
   sendDoneMsg(timeMoment) {
