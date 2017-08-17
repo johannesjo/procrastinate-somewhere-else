@@ -4,11 +4,19 @@ const spawn = require('child_process').spawn;
 const Store = require('jfs');
 const sendMsg = require('./send-message');
 
+const DEFAULTS = {
+  icon: '',
+  repetitions: 5,
+  repetitionInterval: 60000,
+  timeOutBeforeLock: 20000
+};
+const DB_KEY = 'config';
+
 class App {
   constructor() {
     this.db = new Store('db.json', { pretty: true });
     this.currentStoredVals = this.db.allSync().config || {};
-    //this.checkAndWriteDefaults(DEFAULTS, this.currentStoredVals);
+    this.checkAndWriteDefaults(DEFAULTS, this.currentStoredVals.config);
 
     this.baseQuestions = [
       {
@@ -38,6 +46,14 @@ class App {
     ];
 
     this.startPrompt();
+  }
+
+  checkAndWriteDefaults(DEFAULTS, currentCfg) {
+    if (!currentCfg) {
+      this.db.saveSync(DB_KEY, Object.assign({}, DEFAULTS));
+    } else {
+      this.db.saveSync(DB_KEY, Object.assign({}, DEFAULTS, currentCfg));
+    }
   }
 
   parseTimeString(timeStr) {
@@ -70,7 +86,7 @@ class App {
   }
 
   writeInputToDb(dataToSave) {
-    this.db.saveSync('config', Object.assign({}, this.currentStoredVals, dataToSave));
+    this.db.saveSync(DB_KEY, Object.assign({}, this.currentStoredVals, dataToSave));
   }
 
   getTimeDifference(now, then) {
