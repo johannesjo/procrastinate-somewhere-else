@@ -3,7 +3,7 @@ const exec = require('child_process').exec;
 const Store = require('jfs');
 const schedule = require('node-schedule');
 const db = new Store('db.json', { pretty: true });
-const sendMsg = require('send-message');
+const sendMsg = require('./send-message');
 
 
 function launchAction(action) {

@@ -2,7 +2,7 @@ const prompt = require('prompt');
 const moment = require('moment');
 const spawn = require('child_process').spawn;
 const Store = require('jfs');
-const sendMsg = require('send-message');
+const sendMsg = require('./send-message');
 
 class App {
   constructor() {
