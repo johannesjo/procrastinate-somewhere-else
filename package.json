@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "A little program to keep you away from the computer from a certain point of time, via a message, shutting down or going to sleep mode.",
   "main": "index.js",
+  "bin": {
+    "procrastinate-somewhere-else": "index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "",
   "license": "MIT",
