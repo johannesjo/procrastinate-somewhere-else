@@ -20,7 +20,7 @@ class App {
         name: 'time',
         type: 'input',
         message: 'Please enter time when you want be leave the computer (as HH:mm).',
-        default: this.currentStoredVals.time && moment(this.currentStoredVals.time).format('HH:mm')
+        default: this.currentStoredVals.time && moment(this.currentStoredVals.time).format('HH:mm'),
       },
       {
         name: 'action',
@@ -95,7 +95,14 @@ class App {
     if (timeStr.length <= 2) {
       timeStr += ':00';
     }
-    return moment(timeStr, 'H:m');
+    let momentVal = moment(timeStr, 'H:m');
+    // check if maybe tomorrow is meant
+    const diff = momentVal.diff(moment(), 'minutes');
+    if (diff < 1) {
+      momentVal = momentVal.add(1, 'days');
+    }
+
+    return momentVal;
   }
 
   sendDoneMsg(timeMoment) {
