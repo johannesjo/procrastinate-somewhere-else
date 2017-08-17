@@ -4,13 +4,9 @@ const spawn = require('child_process').spawn;
 const Store = require('jfs');
 const sendMsg = require('./send-message');
 
-const DEFAULTS = {
-  icon: '',
-  repetitions: 5,
-  repetitionInterval: 60000,
-  timeOutBeforeLock: 20000
-};
-const DB_KEY = 'config';
+const CONST = require('./constants');
+const DEFAULTS = CONST.DEFAULTS;
+const DB_KEY = CONST.DB_KEY;
 
 class App {
   constructor() {
@@ -48,6 +44,27 @@ class App {
     this.startPrompt();
   }
 
+  startPrompt() {
+    inquirer.prompt(this.baseQuestions)
+      .then((result) => {
+        this.configDone(result);
+      });
+  }
+
+  configDone(result) {
+    const timeMoment = this.parseTimeString(result.time);
+    const dataToSave = Object.assign({}, result, { time: timeMoment });
+    this.writeInputToDb(dataToSave);
+    this.sendDoneMsg(timeMoment);
+    this.startBackgroundProcess();
+  }
+
+  startBackgroundProcess() {
+    spawn('node', ['background-process.js'], {
+      detached: true
+    });
+  }
+
   checkAndWriteDefaults(DEFAULTS, currentCfg) {
     if (!currentCfg) {
       this.db.saveSync(DB_KEY, Object.assign({}, DEFAULTS));
@@ -64,21 +81,6 @@ class App {
     return moment(timeStr, 'H:m');
   }
 
-  startPrompt() {
-    inquirer.prompt(this.baseQuestions)
-      .then((result) => {
-        this.configDone(result);
-      });
-  }
-
-  configDone(result) {
-    const timeMoment = this.parseTimeString(result.time);
-    const dataToSave = Object.assign({}, result, { time: timeMoment });
-    this.writeInputToDb(dataToSave);
-    this.sendDoneMsg(timeMoment);
-    this.startBackgroundProcess();
-  }
-
   sendDoneMsg(timeMoment) {
     const now = moment();
     const timeDiff = this.getTimeDifference(now, timeMoment);
@@ -92,12 +94,6 @@ class App {
 
   getTimeDifference(now, then) {
     return moment.duration(now.diff(then)).humanize();
-  }
-
-  startBackgroundProcess() {
-    spawn('node', ['background-process.js'], {
-      detached: true
-    });
   }
 }
 

@@ -4,7 +4,11 @@ const Store = require('jfs');
 const schedule = require('node-schedule');
 const db = new Store('db.json', { pretty: true });
 const sendMsg = require('./send-message');
+const CONST = require('./constants');
+const DB_KEY = CONST.DB_KEY;
 
+// schedule job right away
+scheduleJob();
 
 function launchAction(action) {
   if (action === 'LOCK') {
@@ -17,35 +21,29 @@ function launchAction(action) {
 }
 
 function scheduleJob() {
-  const time = moment(db.getSync('time')).toDate();
+  const time = moment(db.getSync(DB_KEY).time).toDate();
   schedule.scheduleJob(time, () => {
-    const msg = db.getSync('message');
-    const icon = db.getSync('icon');
-    const repetitions = db.getSync('repetitions');
-    const repetitionInterval = db.getSync('repetitionInterval');
-    const action = db.getSync('action');
-    const timeOutBeforeLock = db.getSync('timeOutBeforeLock');
+    const data = db.getSync(DB_KEY);
 
     let currentRepetitions = 0;
 
     // send one right away
-    sendMsg(msg, null, icon);
+    sendMsg(data.message, null, data.icon);
 
     // one timeout should be enough as we don't need any reps then
     setTimeout(() => {
-      launchAction(action)
-    }, timeOutBeforeLock);
+      launchAction(data.action)
+    }, data.timeOutBeforeLock);
 
     const timerId = setInterval(() => {
-
       currentRepetitions++;
-      sendMsg(msg, null, icon);
-      if (currentRepetitions === repetitions) {
+      sendMsg(data.message, null, data.icon);
+      if (currentRepetitions === data.repetitions) {
         clearInterval(timerId);
       }
-    }, repetitionInterval);
+    }, data.repetitionInterval);
 
   });
 }
 
-scheduleJob();
+
