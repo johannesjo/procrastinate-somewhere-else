@@ -14,7 +14,7 @@ class App {
   startPrompt(cb) {
     prompt.start();
 
-    console.log('Please enter time when you want be leave the computer.');
+    console.log('Please enter time when you want be leave the computer (as "HH:mm").');
     prompt.get(['time'], (err, result) => {
       const time = moment(result.time, 'H:m');
       const now = moment();
