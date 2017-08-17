@@ -11,7 +11,7 @@ class App {
     this.db = new Store('db.json', { pretty: true });
   }
 
-  startPrompt() {
+  startPrompt(cb) {
     prompt.start();
 
     console.log('Please enter time when you want be leave the computer.');
@@ -23,6 +23,9 @@ class App {
       this.writeTimeToDb(time);
 
       console.log(`You will be notified in ${timeDiff} at ${time.format('HH:mm')} o'clock.`);
+      if (cb) {
+        cb();
+      }
     });
   }
 
@@ -43,5 +46,4 @@ class App {
 
 const app = new App();
 app.initDb();
-app.startPrompt();
-//app.startBackgroundProcess();
+app.startPrompt(app.startBackgroundProcess);
