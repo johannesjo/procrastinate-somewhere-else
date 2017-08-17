@@ -7,6 +7,7 @@ const sendMsg = require('./send-message');
 const CONST = require('./constants');
 const DEFAULTS = CONST.DEFAULTS;
 const DB_KEY = CONST.DB_KEY;
+const PI_ID_KEY = CONST.PI_ID_KEY;
 
 class App {
   constructor() {
@@ -56,13 +57,29 @@ class App {
     const dataToSave = Object.assign({}, result, { time: timeMoment });
     this.writeInputToDb(dataToSave);
     this.sendDoneMsg(timeMoment);
+    this.stopPreviousBackgroundProcess();
     this.startBackgroundProcess();
+
+    console.log('All done! Exiting!');
+
+    // kill script afterwards
+    process.exit();
   }
 
   startBackgroundProcess() {
-    spawn('node', ['background-process.js'], {
+    const child = spawn('node', ['background-process.js'], {
       detached: true
     });
+    this.db.saveSync(PI_ID_KEY, child.pid);
+  }
+
+  stopPreviousBackgroundProcess() {
+    try {
+      const childId = this.db.getSync(PI_ID_KEY);
+      process.kill(childId, 'SIGINT');
+    } catch (e) {
+      console.log('No previous processes running. Continuing...');
+    }
   }
 
   checkAndWriteDefaults(DEFAULTS, currentCfg) {

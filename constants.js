@@ -5,5 +5,6 @@ module.exports = {
     repetitionInterval: 60000,
     timeOutBeforeAction: 30000
   },
-  DB_KEY: 'config'
+  DB_KEY: 'config',
+  PI_ID_KEY: 'currentPid'
 };
