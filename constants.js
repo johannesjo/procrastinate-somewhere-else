@@ -3,7 +3,7 @@ module.exports = {
     icon: '',
     repetitions: 3,
     repetitionInterval: 60000,
-    timeOutBeforeLock: 20000
+    timeOutBeforeAction: 30000
   },
   DB_KEY: 'config'
 };

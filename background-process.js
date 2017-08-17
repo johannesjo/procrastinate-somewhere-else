@@ -33,7 +33,7 @@ function scheduleJob() {
     // one timeout should be enough as we don't need any reps then
     setTimeout(() => {
       launchAction(data.action)
-    }, data.timeOutBeforeLock);
+    }, data.timeOutBeforeAction);
 
     const timerId = setInterval(() => {
       currentRepetitions++;
