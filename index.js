@@ -97,7 +97,7 @@ class App {
     }
     let momentVal = moment(timeStr, 'H:m');
     // check if maybe tomorrow is meant
-    const diff = momentVal.diff(moment(), 'minutes');
+    const diff = momentVal.diff(moment(), 'seconds');
     if (diff < 1) {
       momentVal = momentVal.add(1, 'days');
     }
