@@ -2,6 +2,7 @@ const prompt = require('prompt');
 const moment = require('moment');
 const spawn = require('child_process').spawn;
 const Store = require('jfs');
+const sendMsg = require('send-message');
 
 class App {
   constructor() {
@@ -19,10 +20,14 @@ class App {
       const time = moment(result.time, 'H:m');
       const now = moment();
       const timeDiff = this.getTimeDifference(now, time);
+      const msg = `Timer set. You will be notified in ${timeDiff} at ${time.format('HH:mm')} o'clock.`;
 
       this.writeTimeToDb(time);
 
-      console.log(`You will be notified in ${timeDiff} at ${time.format('HH:mm')} o'clock.`);
+      sendMsg(msg);
+      console.log(msg);
+
+      // exec callback if given
       if (cb) {
         cb();
       }

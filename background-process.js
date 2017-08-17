@@ -3,23 +3,8 @@ const exec = require('child_process').exec;
 const Store = require('jfs');
 const schedule = require('node-schedule');
 const db = new Store('db.json', { pretty: true });
+const sendMsg = require('send-message');
 
-function sendMsg(title, msg, icon) {
-  let command = 'notify-send';
-
-  if (icon && icon !== '') {
-    command += ' -i ' + icon;
-  }
-  if (title) {
-    command += ' "' + title + ' "';
-  } else {
-    command += ' "' + ' "';
-  }
-  if (msg && msg !== "") {
-    command += ' "' + msg + '"';
-  }
-  exec(command);
-}
 
 function launchAction(action) {
   if (action === 'LOCK') {
