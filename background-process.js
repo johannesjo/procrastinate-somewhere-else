@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
-const low = require('lowdb');
-const db = low('db.json');
+const Store = require('jfs');
+const db = new Store('db.json', { pretty: true });
+
 
 function sendMsg(title, msg, icon) {
   console.log(title, msg, icon)
@@ -23,10 +24,11 @@ function sendMsg(title, msg, icon) {
 
 }
 
-const time = db.get('time').value;
-const msg = db.get('message').value;
+const time = db.getSync('time');
+const msg = db.getSync('message');
+const icon = db.getSync('icon');
 
-console.log(time, msg);
+console.log(time, msg, icon);
 
 //sendMsg(msg, time);
 sendMsg('msg', 'time');

@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "lowdb": "^0.16.2",
+    "jfs": "^0.2.6",
     "moment": "^2.18.1",
     "prompt": "^1.0.0"
   }

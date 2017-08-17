@@ -1,20 +1,14 @@
-const low = require('lowdb');
-const db = low('db.json');
 const prompt = require('prompt');
 const moment = require('moment');
 const spawn = require('child_process').spawn;
+const Store = require('jfs');
 
 class App {
   constructor() {
   }
 
   initDb() {
-    // Set some defaults if your JSON file is empty
-    db.defaults({
-      message: '',
-      time: null
-    })
-      .write();
+    this.db = new Store('db.json', { pretty: true });
   }
 
   startPrompt() {
@@ -33,8 +27,7 @@ class App {
   }
 
   writeTimeToDb(time) {
-    db.set('time', time)
-      .write()
+    this.db.saveSync('time', time);
   }
 
   getTimeDifference(now, then) {
