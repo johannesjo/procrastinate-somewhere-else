@@ -9,6 +9,8 @@ const STORE_FILE_PATH = CONST.STORE_FILE_PATH;
 const db = new Store(STORE_FILE_PATH, { pretty: true });
 
 // schedule job right away
+sendMsg('test');
+
 scheduleJob();
 
 function launchAction(action) {
@@ -22,29 +24,34 @@ function launchAction(action) {
 }
 
 function scheduleJob() {
-  const time = moment(db.getSync(DB_KEY).time).toDate();
-  schedule.scheduleJob(time, () => {
-    const data = db.getSync(DB_KEY);
+  try {
+    const time = moment(db.getSync(DB_KEY).time).toDate();
 
-    let currentRepetitions = 0;
+    schedule.scheduleJob(time, () => {
+      const data = db.getSync(DB_KEY);
 
-    // send one right away
-    sendMsg(data.message, null, data.icon);
+      let currentRepetitions = 0;
 
-    // one timeout should be enough as we don't need any reps then
-    setTimeout(() => {
-      launchAction(data.action)
-    }, data.timeOutBeforeAction);
-
-    const timerId = setInterval(() => {
-      currentRepetitions++;
+      // send one right away
       sendMsg(data.message, null, data.icon);
-      if (currentRepetitions === data.repetitions) {
-        clearInterval(timerId);
-      }
-    }, data.repetitionInterval);
 
-  });
+      // one timeout should be enough as we don't need any reps then
+      setTimeout(() => {
+        launchAction(data.action)
+      }, data.timeOutBeforeAction);
+
+      const timerId = setInterval(() => {
+        currentRepetitions++;
+        sendMsg(data.message, null, data.icon);
+        if (currentRepetitions === data.repetitions) {
+          clearInterval(timerId);
+        }
+      }, data.repetitionInterval);
+
+    });
+  } catch (e) {
+    sendMsg('procrastinate-somewhere-else', e);
+  }
 }
 
 
