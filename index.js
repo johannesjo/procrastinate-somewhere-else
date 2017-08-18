@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const inquirer = require('inquirer');
 const moment = require('moment');
 const spawn = require('child_process').spawn;
