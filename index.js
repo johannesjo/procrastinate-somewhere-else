@@ -86,6 +86,7 @@ class App {
     try {
       const childId = this.db.getSync(PI_ID_KEY);
       process.kill(childId, 'SIGINT');
+      console.log(`Killing previous background process (${childId}). Continuing...`);
     } catch (e) {
       console.log('No previous processes running. Continuing...');
     }
