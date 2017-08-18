@@ -85,8 +85,6 @@ class App {
   }
 
   checkAndWriteDefaults(DEFAULTS, currentCfg) {
-    console.log(DEFAULTS, currentCfg);
-
     if (!currentCfg) {
       this.db.saveSync(DB_KEY, Object.assign({}, DEFAULTS));
     } else {
