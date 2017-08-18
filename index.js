@@ -64,13 +64,20 @@ class App {
 
     console.log('All done! Exiting!');
 
-    // kill script afterwards
-    process.exit();
+    // kill script afterwards, but wait just a little bit for
+    // error messages by the spawned process
+    setTimeout(() => {
+      process.exit();
+    }, 300);
   }
 
   startBackgroundProcess() {
-    const child = spawn('node', ['background-process.js'], {
+    const child = spawn('node', [__dirname + '/background-process.js'], {
       detached: true
+    });
+    console.log('Background process initialized. Continuing...');
+    child.stderr.on('data', (data) => {
+      console.log(`ps stderr: ${data}`);
     });
     this.db.saveSync(PI_ID_KEY, child.pid);
   }
