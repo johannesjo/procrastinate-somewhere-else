@@ -9,8 +9,6 @@ const STORE_FILE_PATH = CONST.STORE_FILE_PATH;
 const db = new Store(STORE_FILE_PATH, { pretty: true });
 
 // schedule job right away
-sendMsg('test');
-
 scheduleJob();
 
 function launchAction(action) {
