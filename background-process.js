@@ -2,10 +2,11 @@ const moment = require('moment');
 const exec = require('child_process').exec;
 const Store = require('jfs');
 const schedule = require('node-schedule');
-const db = new Store('db.json', { pretty: true });
 const sendMsg = require('./send-message');
 const CONST = require('./constants');
 const DB_KEY = CONST.DB_KEY;
+const STORE_FILE_PATH = CONST.STORE_FILE_PATH;
+const db = new Store(STORE_FILE_PATH, { pretty: true });
 
 // schedule job right away
 scheduleJob();

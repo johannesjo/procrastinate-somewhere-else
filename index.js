@@ -9,12 +9,13 @@ const CONST = require('./constants');
 const DEFAULTS = CONST.DEFAULTS;
 const DB_KEY = CONST.DB_KEY;
 const PI_ID_KEY = CONST.PI_ID_KEY;
+const STORE_FILE_PATH = CONST.STORE_FILE_PATH;
 
 class App {
   constructor() {
-    this.db = new Store('db.json', { pretty: true });
+    this.db = new Store(STORE_FILE_PATH, { pretty: true });
     this.currentStoredVals = this.db.allSync().config || {};
-    this.checkAndWriteDefaults(DEFAULTS, this.currentStoredVals.config);
+    this.checkAndWriteDefaults(DEFAULTS, this.currentStoredVals);
 
     this.baseQuestions = [
       {
@@ -84,6 +85,8 @@ class App {
   }
 
   checkAndWriteDefaults(DEFAULTS, currentCfg) {
+    console.log(DEFAULTS, currentCfg);
+
     if (!currentCfg) {
       this.db.saveSync(DB_KEY, Object.assign({}, DEFAULTS));
     } else {
