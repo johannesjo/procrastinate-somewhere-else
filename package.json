@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
+  "author": "johannesjo<jo@the-front-end.de>",
   "license": "MIT",
   "dependencies": {
     "inquirer": "^3.2.2",
