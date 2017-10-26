@@ -6,6 +6,10 @@
   "bin": {
     "procrastinate-somewhere-else": "index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/johannesjo/procrastinate-somewhere-else.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
