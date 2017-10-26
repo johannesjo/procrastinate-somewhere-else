@@ -25,3 +25,6 @@ Add it as startup script with the following command.
 ```
 gnome-terminal --command "node /home/[youruser]/[path-to/procrastinate-somewhere-else]/index.js" 
 ```
+
+## advanced config
+If needed (*no need really*) you can fiddle around with some pro settings in `[path-to-pse]/db.json`.
