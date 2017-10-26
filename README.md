@@ -3,7 +3,7 @@
 # procrastinate-somewhere-else
 *Just a little longer... no more!*
 
-![Daily Planner](screenshot.png)
+![screenshot](screenshot.png)
 
 A little program to help you leaving your computer via your own very personal message (e.g. "gtfo you lazy shit! <3"), shutting down or going to sleep mode. What's not to love?
 
